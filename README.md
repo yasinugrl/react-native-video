@@ -94,7 +94,7 @@ end
 ### tvOS installation
   <details>
   <summary>tvOS details</summary>
-  
+
 `react-native link react-native-video` doesn’t work properly with the tvOS target so we need to add the library manually.
 
 First select your project in Xcode.
@@ -295,6 +295,7 @@ var styles = StyleSheet.create({
 * [automaticallyWaitsToMinimizeStalling](#automaticallyWaitsToMinimizeStalling)
 * [bufferConfig](#bufferconfig)
 * [controls](#controls)
+* [disableFocus](#disableFocus)
 * [filter](#filter)
 * [filterEnabled](#filterEnabled)
 * [fullscreen](#fullscreen)
@@ -1182,7 +1183,7 @@ Save video to your Photos with current filter prop. Returns promise.
 
 Example:
 ```
-let response = await this.save();
+let response = await this.player.save();
 let path = response.uri;
 ```
 
@@ -1194,12 +1195,12 @@ Notes:
  - Works with cached videos as well. (Checkout video-caching example)
  - If the video is has not began buffering (e.g. there is no internet connection) then the save function will throw an error.
  - If the video is buffering then the save function promise will return after the video has finished buffering and processing.
- 
+
 Future: 
  - Will support multiple qualities through options
  - Will support more formats in the future through options
  - Will support custom directory and file name through options
- 
+
 Platforms: iOS
 
 #### restoreUserInterfaceForPictureInPictureStopCompleted
