@@ -420,6 +420,14 @@ Video.propTypes = {
       language: PropTypes.string.isRequired
     })
   ),
+  audioTracks: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      uri: PropTypes.string.isRequired,
+      type: PropTypes.string,
+      language: PropTypes.string.isRequired
+    })
+  ),
   paused: PropTypes.bool,
   muted: PropTypes.bool,
   volume: PropTypes.number,

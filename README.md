@@ -326,6 +326,7 @@ var styles = StyleSheet.create({
 * [alternativeAudioSource](#alternativeAudioSource)
 * [stereoPan](#stereopan)
 * [textTracks](#texttracks)
+* [audioTracks](#audiotracks)
 * [useTextureView](#usetextureview)
 * [volume](#volume)
 
@@ -803,6 +804,42 @@ Adjust the balance of the left and right audio channels.  Any value between –1
 * **1.0** - Full right
 
 Platforms: Android MediaPlayer
+
+
+#### audioTracks
+Load one or more custom audio tracks. This takes an array of objects representing each track. Each object should have the format:
+
+Property | Description
+--- | ---
+title | Descriptive name for the track
+language | 2 letter [ISO 639-1 code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) representing the language
+type | audio/mp4a-latm
+uri | URL for the audio track. mp3 ect.
+
+Note: Just working on Android. If you use custom audio on IOS you can use alternativeAudioSource.
+
+Example:
+```
+
+textTracks={[
+  {
+    title: "English CC",
+    language: "en",
+    type: "audio/mp4a-latm"
+    uri: "http://webaudioapi.com/samples/audio-tag/chrono.mp3"
+  },
+  {
+    title: "Turkish CC",
+    language: "tr",
+    type: "audio/mp4a-latm"
+    uri: "http://webaudioapi.com/samples/audio-tag/chrono.mp3"
+  },
+]}
+```
+
+
+Platforms: Android ExoPlayer
+
 
 #### textTracks
 Load one or more "sidecar" text tracks. This takes an array of objects representing each track. Each object should have the format:

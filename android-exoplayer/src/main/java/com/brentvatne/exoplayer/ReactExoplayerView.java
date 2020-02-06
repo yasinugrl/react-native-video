@@ -35,6 +35,7 @@ import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil;
 import com.google.android.exoplayer2.metadata.Metadata;
@@ -133,6 +134,7 @@ class ReactExoplayerView extends FrameLayout implements
     private String textTrackType;
     private Dynamic textTrackValue;
     private ReadableArray textTracks;
+    private ReadableArray audioTracks;
     private boolean disableFocus;
     private float mProgressUpdateInterval = 250.0f;
     private boolean playInBackground = false;
@@ -371,12 +373,19 @@ class ReactExoplayerView extends FrameLayout implements
                 }
                 if (playerNeedsSource && srcUri != null) {
                     ArrayList<MediaSource> mediaSourceList = buildTextSources();
+                    ArrayList<MediaSource> mediaAudioSourceList = buildAudioSources();
                     MediaSource videoSource = buildMediaSource(srcUri, extension);
                     MediaSource mediaSource;
                     if (mediaSourceList.size() == 0) {
                         mediaSource = videoSource;
                     } else {
                         mediaSourceList.add(0, videoSource);
+
+                        for (int i = 0; i < mediaAudioSourceList.size(); ++i) {
+                            mediaSourceList.add(i + 1, mediaAudioSourceList.get(i));
+
+                        }
+
                         MediaSource[] textSourceArray = mediaSourceList.toArray(
                                 new MediaSource[mediaSourceList.size()]
                         );
@@ -457,6 +466,33 @@ class ReactExoplayerView extends FrameLayout implements
             }
         }
         return textSources;
+    }
+
+    private ArrayList<MediaSource> buildAudioSources() {
+        ArrayList<MediaSource> audioSources = new ArrayList<>();
+        if (audioTracks == null) {
+            return audioSources;
+        }
+
+        for (int i = 0; i < audioTracks.size(); ++i) {
+
+            ReadableMap audioTrack = audioTracks.getMap(i);
+            String language = audioTrack.getString("language");
+            String title = audioTrack.hasKey("title")
+                    ? audioTrack.getString("title") : language + " " + i;
+            Uri uri = Uri.parse(audioTrack.getString("uri"));
+
+            MediaSource audioSource = buildAudioSource(title, uri, audioTrack.getString("type"),
+                    language);
+            if (audioSource != null) {
+                audioSources.add(audioSource);
+            }
+        }
+        return audioSources;
+    }
+
+    private MediaSource buildAudioSource(String title, Uri uri, String mimeType, String language) {
+        return  new ProgressiveMediaSource.Factory(mediaDataSourceFactory, new DefaultExtractorsFactory()).createMediaSource(uri);
     }
 
     private MediaSource buildTextSource(String title, Uri uri, String mimeType, String language) {
@@ -931,6 +967,11 @@ class ReactExoplayerView extends FrameLayout implements
 
     public void setTextTracks(ReadableArray textTracks) {
         this.textTracks = textTracks;
+        reloadSource();
+    }
+
+    public void setAudioTracks(ReadableArray audioTracks) {
+        this.audioTracks = audioTracks;
         reloadSource();
     }
 
