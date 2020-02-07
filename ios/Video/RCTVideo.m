@@ -422,8 +422,6 @@ static int const RCTVideoUnset = -1;
 {
   // AVPlayer can't airplay AVMutableCompositions
   _allowsExternalPlayback = NO;
-
-  // sideload text tracks
   AVMutableComposition *mixComposition = [[AVMutableComposition alloc] init];
   
   AVAssetTrack *videoAsset = [asset tracksWithMediaType:AVMediaTypeVideo].firstObject;
@@ -433,7 +431,7 @@ static int const RCTVideoUnset = -1;
                            atTime:kCMTimeZero
                             error:nil];
   
-  // load alternative audio source, if provided
+// load alternative audio source, if provided
   if (audio != nil) {
     AVAssetTrack *audioAsset2 = [audio tracksWithMediaType:AVMediaTypeAudio].firstObject;
     AVMutableCompositionTrack *audioCompTrack2 = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
@@ -454,6 +452,7 @@ static int const RCTVideoUnset = -1;
     handler([AVPlayerItem playerItemWithAsset:asset]);
     return;
   }
+
 
   NSMutableArray* validTextTracks = [NSMutableArray array];
   for (int i = 0; i < _textTracks.count; ++i) {
@@ -498,8 +497,7 @@ static int const RCTVideoUnset = -1;
   NSURL *url = isNetwork || isAsset
     ? [NSURL URLWithString:uri]
     : [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] pathForResource:uri ofType:type]];
-  NSMutableDictionary *assetOptions = [[NSMutableDictionary alloc] init];
-  
+
   NSURL *alternativeAudioURL = nil;
   
   if (![@"" isEqualToString:alternativeAudioURI] && alternativeAudioURI != [NSNull null]) {
@@ -507,6 +505,9 @@ static int const RCTVideoUnset = -1;
     ? [NSURL URLWithString:alternativeAudioURI]
     : [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] pathForResource:alternativeAudioURI ofType:type]];
   }
+  
+  NSMutableDictionary *assetOptions = [[NSMutableDictionary alloc] init];
+  
 
   AVURLAsset *alternativeAudioAsset = nil;
   
@@ -538,6 +539,7 @@ static int const RCTVideoUnset = -1;
 #endif
 
     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:url options:assetOptions];
+
     [self playerItemPrepareText:asset assetOptions:assetOptions withCallback:handler withAudio:alternativeAudioAsset];
     return;
   } else if (isAsset) {
@@ -1406,6 +1408,11 @@ static int const RCTVideoUnset = -1;
 {
   if (_playerViewController == playerViewController && _fullscreenPlayerPresented && self.onVideoFullscreenPlayerWillDismiss)
   {
+    @try{
+      [_playerViewController.contentOverlayView removeObserver:self forKeyPath:@"frame"];
+      [_playerViewController removeObserver:self forKeyPath:readyForDisplayKeyPath];
+    }@catch(id anException){
+    }
     self.onVideoFullscreenPlayerWillDismiss(@{@"target": self.reactTag});
   }
 }

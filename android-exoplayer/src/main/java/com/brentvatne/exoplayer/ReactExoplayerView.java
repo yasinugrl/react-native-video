@@ -1264,4 +1264,12 @@ class ReactExoplayerView extends FrameLayout implements
             }
         }
     }
+
+    public void setFontSizeTrack(int fontSizeTrack) {
+        exoPlayerView.setFontSizeTrack(fontSizeTrack);
+    }
+
+    public void setPaddingBottonTrack(float paddingBottonTrack) {
+        exoPlayerView.setPaddingBottonTrack(paddingBottonTrack);
+    }
 }

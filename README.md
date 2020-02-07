@@ -329,6 +329,8 @@ var styles = StyleSheet.create({
 * [audioTracks](#audiotracks)
 * [useTextureView](#usetextureview)
 * [volume](#volume)
+* [fontSizeTrack](#fontSizeTrack)
+* [paddingBottonTrack](#paddingBottonTrack)
 
 ### Event props
 * [onAudioBecomingNoisy](#onaudiobecomingnoisy)
@@ -630,8 +632,8 @@ Platforms: all
 #### reportBandwidth
 Determine whether to generate onBandwidthUpdate events. This is needed due to the high frequency of these events on ExoPlayer.
 
-* **false (default)** - Generate onBandwidthUpdate events
-* **true** - Don't generate onBandwidthUpdate events
+* **false (default)** - Don't generate onBandwidthUpdate events
+* **true** - Generate onBandwidthUpdate events
 
 Platforms: Android ExoPlayer
 
@@ -900,6 +902,19 @@ Adjust the volume.
 
 Platforms: all
 
+#### fontSizeTrack
+Adjust the font size of the subtitles in Android.
+* **Default font size of the device** - The default value for this props
+* **Other values (int)** - Change the font size
+
+Platforms: Android ExoPlayer
+
+#### paddingBottonTrack
+Adjust the padding botton of the subtitles in Android.
+* **0.1 (default)** - Give a padding botton of 0.1
+* **Other values (float)** - Change the padding botton
+
+Platforms: Android ExoPlayer
 
 ### Event props
 
